@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000/api
+    depends_on:
+      - backend
+    networks:
+      - mcq-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./mcq_generator.db}
+    volumes:
+      - backend_data:/app/data
+    networks:
+      - mcq-network
+
+  database:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=mcq_db
+      - POSTGRES_USER=mcq_user
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-mcq_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - mcq-network
+
+volumes:
+  backend_data:
+  postgres_data:
+
+networks:
+  mcq-network:
+    driver: bridge

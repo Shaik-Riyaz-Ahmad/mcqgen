@@ -1,36 +1,212 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Learner MCQ - Professional MCQ Generator
 
-## Getting Started
+A modern, full-stack application for generating high-quality Multiple Choice Questions (MCQs) from any text using Google Gemini AI and LangChain.
 
-First, run the development server:
+## 🚀 Features
 
+- **AI-Powered Generation**: Generate MCQs from any text using Google Gemini AI
+- **Professional UI**: Modern, responsive design with Tailwind CSS and shadcn/ui
+- **User Authentication**: Secure login/register system with JWT
+- **Quiz Management**: Create, save, and manage quiz sets
+- **Multiple Difficulty Levels**: Simple, Moderate, and Complex questions
+- **Export Options**: Download quizzes as CSV files
+- **Real-time Analytics**: Track quiz performance and statistics
+- **Responsive Design**: Works perfectly on desktop and mobile
+
+## 🛠 Tech Stack
+
+### Frontend
+- **Next.js 14** with App Router
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling
+- **shadcn/ui** components
+- **Lucide React** icons
+
+### Backend
+- **FastAPI** for API development
+- **SQLAlchemy** ORM
+- **PostgreSQL/SQLite** database
+- **JWT Authentication**
+- **Google Gemini AI** integration
+- **LangChain** for AI workflows
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js 18+ 
+- Python 3.8+
+- Google Gemini API key
+
+### 1. Clone and Setup
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd AI_Learner_MCQ
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Frontend Setup
+```bash
+# Install dependencies
+npm install
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Copy environment file
+cp .env.local.example .env.local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Edit .env.local with your settings
+```
 
-## Learn More
+### 3. Backend Setup
+```bash
+# Navigate to backend
+cd backend
 
-To learn more about Next.js, take a look at the following resources:
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Install dependencies
+pip install -r requirements.txt
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Copy environment file
+cp .env.example .env
 
-## Deploy on Vercel
+# Edit .env with your Google API key and settings
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4. Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Frontend (.env.local):**
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+```
+
+**Backend (.env):**
+```env
+GOOGLE_API_KEY=your-google-gemini-api-key-here
+SECRET_KEY=your-super-secret-jwt-key-here
+DATABASE_URL=sqlite:///./mcq_generator.db
+```
+
+## 🚦 Running the Application
+
+### Development Mode
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+python main.py
+```
+
+**Terminal 2 - Frontend:**
+```bash
+npm run dev
+```
+
+Visit http://localhost:3000 to access the application.
+
+### Production Mode
+
+**Backend:**
+```bash
+cd backend
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+**Frontend:**
+```bash
+npm run build
+npm start
+```
+
+## 📖 Usage
+
+1. **Register/Login**: Create an account or sign in
+2. **Generate MCQs**: 
+   - Paste your text or upload a .txt file
+   - Configure number of questions, subject, and difficulty
+   - Click "Generate MCQs" 
+3. **Review Results**: Review generated questions and AI feedback
+4. **Save Quiz**: Add title/description and save to your library
+5. **Manage Quizzes**: View, edit, or export your saved quizzes
+6. **Analytics**: Track your quiz creation statistics
+
+## 🔧 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+
+### MCQ Generation
+- `POST /api/mcq/generate` - Generate MCQs from text
+- `POST /api/mcq/quiz-sets` - Create quiz set
+- `GET /api/mcq/quiz-sets` - Get user's quiz sets
+- `GET /api/mcq/quiz-sets/{id}` - Get specific quiz set
+
+### User Management
+- `GET /api/users/me` - Get current user profile
+- `PUT /api/users/profile` - Update user profile
+
+## 🐳 Docker Deployment
+
+**Backend Dockerfile:**
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+**Frontend Dockerfile:**
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+## 🎯 Features Roadmap
+
+- [ ] Quiz taking interface with timer
+- [ ] Advanced analytics and reporting
+- [ ] Question types beyond MCQ (True/False, Fill-in-blank)
+- [ ] Collaborative quiz sharing
+- [ ] Integration with learning management systems
+- [ ] Mobile app development
+- [ ] Bulk quiz generation from documents
+- [ ] AI-powered question difficulty assessment
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Google Gemini AI](https://ai.google.dev/) for powerful AI capabilities
+- [LangChain](https://github.com/langchain-ai/langchain) for AI workflow management
+- [FastAPI](https://fastapi.tiangolo.com/) for the excellent API framework
+- [Next.js](https://nextjs.org/) for the amazing React framework
+- [shadcn/ui](https://ui.shadcn.com/) for beautiful UI components
+
+## 📞 Support
+
+For support, email support@example.com or create an issue on GitHub.
+
+---
+
+Made with ❤️ by the AI Learner MCQ Team
