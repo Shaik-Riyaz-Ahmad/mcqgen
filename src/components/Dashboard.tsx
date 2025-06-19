@@ -18,6 +18,7 @@ import QuizList from './quiz/QuizList';
 import apiClient from '@/lib/api';
 import { QuizSet } from '@/types';
 
+
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('generate');
